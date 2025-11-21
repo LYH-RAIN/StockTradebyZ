@@ -701,8 +701,8 @@ class MA60CrossVolumeWaveSelector:
     """
     条件：
     1) 当日 J 绝对低或相对低（J < j_threshold 或 J ≤ 近 max_window 根 J 的 j_q_threshold 分位）
-    2) 最近 lookback_n 内，存在一次“有效上穿 MA60”（t-1 收盘 < MA60, t 收盘 ≥ MA60）；
-       且从该上穿日 T 到今天的“上涨波段”日均成交量 ≥ 上穿前等长窗口的日均成交量 * vol_multiple
+    2) 最近 lookback_n 内，存在一次"有效上穿 MA60"（t-1 收盘 < MA60, t 收盘 ≥ MA60）；
+       且从该上穿日 T 到今天的"上涨波段"日均成交量 ≥ 上穿前等长窗口的日均成交量 * vol_multiple
        —— 上涨波段定义为 [T, today] 间的所有交易日（不做趋势单调性强约束，稳健且可复现）
     3) 近 ma60_slope_days（默认 5）个交易日的 MA60 回归斜率 > 0
     """
@@ -783,7 +783,7 @@ class MA60CrossVolumeWaveSelector:
         if seg_T_to_today.empty:
             return False
 
-        # 若并列最高，默认取“第一次”出现的那天；要“最后一次”可改见注释
+        # 若并列最高，默认取"第一次"出现的那天；要"最后一次"可改见注释
         tmax_label = seg_T_to_today["high"].idxmax()
         int_pos_T   = t_pos
         int_pos_Tmax = hist.index.get_loc(tmax_label)
@@ -831,4 +831,303 @@ class MA60CrossVolumeWaveSelector:
                 continue
             if self._passes_filters(hist):
                 picks.append(code)
+        return picks
+
+
+class BreakoutPreviousHighSelector:
+    """
+    出坑战法（突破前高战法）
+    
+    核心理念：前高突破+放量确认 - 捕捉调整后的二次启动机会
+    
+    策略逻辑：
+    1. 形态识别：
+       - 存在前期拉升创新高
+       - 高位回调后横盘整理
+       - 股价在短期均线(MA5/MA10)和长期均线(MA20/MA30)之间震荡
+       - 调整期间成交量萎缩
+       
+    2. 买入时机：
+       - 当日放量突破（量比≥vol_ratio_threshold，换手率≥turnover_threshold）
+       - 股价接近前高（距离前高≤approach_pct）
+       - 短期均线向上，长期均线支撑
+       
+    3. 真突破判断：
+       - 成交量放大倍数符合要求
+       - 均线多头排列或收敛向上
+       - 回调期间缩量明显（震荡区间成交量萎缩）
+       
+    4. 知行约束：
+       - 收盘>长期线 且 短期线>长期线
+    """
+    
+    def __init__(
+        self,
+        *,
+        lookback_days: int = 60,           # 回看窗口（寻找前高）
+        consolidation_min_days: int = 5,  # 震荡整理最小天数
+        consolidation_max_days: int = 30, # 震荡整理最大天数
+        approach_pct: float = 0.15,        # 接近前高的距离（15%以内）
+        vol_ratio_threshold: float = 2.0, # 突破日量比阈值
+        turnover_threshold: float = 0.05,  # 突破日换手率阈值（5%）
+        consolidation_shrink_ratio: float = 0.6,  # 震荡期缩量比例
+        pullback_pct_min: float = 0.05,    # 回调幅度下限（5%）
+        pullback_pct_max: float = 0.25,    # 回调幅度上限（25%）
+        ma_converge_threshold: float = 0.05,  # 均线收敛阈值
+        max_window: int = 120,             # 最大回看窗口（用于数据准备）
+    ) -> None:
+        if lookback_days < consolidation_max_days:
+            raise ValueError("lookback_days 应 ≥ consolidation_max_days")
+        if consolidation_min_days > consolidation_max_days:
+            raise ValueError("consolidation_min_days 应 ≤ consolidation_max_days")
+        if not (0 < approach_pct < 1):
+            raise ValueError("approach_pct 应在 (0, 1) 区间")
+        if not (0 < pullback_pct_min < pullback_pct_max < 1):
+            raise ValueError("回调幅度参数不合理")
+            
+        self.lookback_days = lookback_days
+        self.consolidation_min_days = consolidation_min_days
+        self.consolidation_max_days = consolidation_max_days
+        self.approach_pct = approach_pct
+        self.vol_ratio_threshold = vol_ratio_threshold
+        self.turnover_threshold = turnover_threshold
+        self.consolidation_shrink_ratio = consolidation_shrink_ratio
+        self.pullback_pct_min = pullback_pct_min
+        self.pullback_pct_max = pullback_pct_max
+        self.ma_converge_threshold = ma_converge_threshold
+        self.max_window = max_window
+    
+    def _find_previous_high(self, hist: pd.DataFrame) -> Optional[Dict[str, Any]]:
+        """
+        在回看窗口内寻找前期高点
+        
+        返回：
+        {
+            'high_price': 前高价格,
+            'high_idx': 前高位置(iloc),
+            'high_date': 前高日期
+        }
+        """
+        if len(hist) < self.lookback_days:
+            return None
+        
+        # 在lookback_days窗口内寻找最高点（排除最近几日）
+        window = hist.iloc[-(self.lookback_days + 5):-5].copy()
+        if window.empty:
+            return None
+        
+        # 使用scipy寻找显著峰值
+        peaks_df = _find_peaks(window, column="high", distance=5, prominence=0.5)
+        
+        if peaks_df.empty:
+            # 如果没有显著峰值，使用最高价
+            max_idx = window["high"].idxmax()
+            max_row = window.loc[max_idx]
+            high_pos = hist.index.get_loc(max_idx)
+        else:
+            # 选择最高的峰值
+            highest_peak = peaks_df.nlargest(1, "high").iloc[0]
+            high_pos = hist.index.get_loc(highest_peak.name)
+            max_row = highest_peak
+        
+        return {
+            'high_price': float(max_row['high']),
+            'high_idx': high_pos,
+            'high_date': max_row['date']
+        }
+    
+    def _check_consolidation_phase(
+        self, 
+        hist: pd.DataFrame, 
+        high_idx: int
+    ) -> Optional[Dict[str, Any]]:
+        """
+        检查是否存在震荡整理阶段
+        
+        返回：
+        {
+            'consol_start_idx': 震荡开始位置,
+            'consol_end_idx': 震荡结束位置（当日前一日）,
+            'avg_volume': 震荡期间平均成交量
+        }
+        """
+        # 从前高之后开始到当日前一日
+        consol_seg = hist.iloc[high_idx + 1 : -1]
+        
+        if len(consol_seg) < self.consolidation_min_days:
+            return None
+        
+        if len(consol_seg) > self.consolidation_max_days:
+            # 只取最近consolidation_max_days天
+            consol_seg = consol_seg.iloc[-self.consolidation_max_days:]
+        
+        # 计算均线
+        consol_seg = consol_seg.copy()
+        consol_seg['MA5'] = consol_seg['close'].rolling(5, min_periods=1).mean()
+        consol_seg['MA10'] = consol_seg['close'].rolling(10, min_periods=1).mean()
+        consol_seg['MA20'] = consol_seg['close'].rolling(20, min_periods=1).mean()
+        consol_seg['MA30'] = consol_seg['close'].rolling(30, min_periods=1).mean()
+        
+        # 检查股价是否在短期均线和长期均线之间震荡
+        # 至少70%的时间满足：MA20/MA30 < close < MA5/MA10（允许一定灵活性）
+        short_ma = consol_seg[['MA5', 'MA10']].min(axis=1)
+        long_ma = consol_seg[['MA20', 'MA30']].max(axis=1)
+        
+        # 放宽条件：价格在长期均线上方即可
+        between_ma_ratio = (consol_seg['close'] >= long_ma * 0.98).sum() / len(consol_seg)
+        
+        if between_ma_ratio < 0.6:  # 至少60%的时间在长期均线上方
+            return None
+        
+        # 计算震荡期间平均成交量
+        avg_vol = float(consol_seg['volume'].mean())
+        
+        return {
+            'consol_start_idx': hist.index.get_loc(consol_seg.index[0]),
+            'consol_end_idx': hist.index.get_loc(consol_seg.index[-1]),
+            'avg_volume': avg_vol
+        }
+    
+    def _passes_filters(self, hist: pd.DataFrame) -> bool:
+        """单支股票过滤逻辑"""
+        if hist.empty or len(hist) < self.lookback_days + 10:
+            return False
+        
+        hist = hist.copy().sort_values("date")
+        
+        # 1. 统一当日过滤
+        if not passes_day_constraints_today(hist):
+            return False
+        
+        # 2. 计算均线
+        hist['MA5'] = hist['close'].rolling(5, min_periods=1).mean()
+        hist['MA10'] = hist['close'].rolling(10, min_periods=1).mean()
+        hist['MA20'] = hist['close'].rolling(20, min_periods=1).mean()
+        hist['MA30'] = hist['close'].rolling(30, min_periods=1).mean()
+        
+        # 3. 寻找前高
+        prev_high_info = self._find_previous_high(hist)
+        if prev_high_info is None:
+            return False
+        
+        high_price = prev_high_info['high_price']
+        high_idx = prev_high_info['high_idx']
+        
+        # 4. 检查回调幅度（从前高到震荡期最低）
+        after_high = hist.iloc[high_idx + 1 : -1]
+        if after_high.empty:
+            return False
+        
+        pullback_low = float(after_high['close'].min())
+        pullback_pct = (high_price - pullback_low) / high_price
+        
+        if not (self.pullback_pct_min <= pullback_pct <= self.pullback_pct_max):
+            return False
+        
+        # 5. 检查震荡整理阶段
+        consol_info = self._check_consolidation_phase(hist, high_idx)
+        if consol_info is None:
+            return False
+        
+        consol_avg_vol = consol_info['avg_volume']
+        
+        # 6. 当日价格接近前高（距离≤approach_pct）
+        close_today = float(hist.iloc[-1]['close'])
+        distance_to_high = abs(close_today - high_price) / high_price
+        
+        # 必须在前高下方接近，或刚突破前高不远
+        if close_today < high_price:
+            # 在下方接近
+            if distance_to_high > self.approach_pct:
+                return False
+        else:
+            # 已突破，但不能离太远
+            if distance_to_high > 0.05:  # 突破后不超过5%
+                return False
+        
+        # 7. 当日放量检查
+        vol_today = float(hist.iloc[-1]['volume'])
+        
+        # 计算量比（相对于震荡期平均量）
+        if consol_avg_vol <= 0:
+            return False
+        
+        vol_ratio = vol_today / consol_avg_vol
+        if vol_ratio < self.vol_ratio_threshold:
+            return False
+        
+        # 8. 换手率检查（简化：用当日成交量相对于近期平均的比例）
+        recent_avg_vol = float(hist.iloc[-20:-1]['volume'].mean())
+        if recent_avg_vol > 0:
+            turnover_proxy = vol_today / recent_avg_vol
+            if turnover_proxy < self.turnover_threshold * 10:  # 调整因子
+                return False
+        
+        # 9. 震荡期缩量检查
+        # 前期拉升成交量（前高附近5日）
+        rally_vol_seg = hist.iloc[max(0, high_idx - 5):high_idx + 1]['volume']
+        rally_avg_vol = float(rally_vol_seg.mean())
+        
+        if rally_avg_vol > 0:
+            shrink_ratio = consol_avg_vol / rally_avg_vol
+            if shrink_ratio > self.consolidation_shrink_ratio:
+                # 震荡期没有明显缩量
+                return False
+        
+        # 10. 均线系统检查
+        ma5_today = float(hist.iloc[-1]['MA5'])
+        ma10_today = float(hist.iloc[-1]['MA10'])
+        ma20_today = float(hist.iloc[-1]['MA20'])
+        ma30_today = float(hist.iloc[-1]['MA30'])
+        
+        # 短期均线向上（至少一条在上方或拐头向上）
+        if len(hist) >= 3:
+            ma5_slope = ma5_today - hist.iloc[-3]['MA5']
+            ma10_slope = ma10_today - hist.iloc[-3]['MA10']
+            
+            if not (ma5_slope > 0 or ma10_slope > 0):
+                return False
+        
+        # 长期均线支撑（价格在长期均线上方）
+        if not (close_today >= ma20_today * 0.98 or close_today >= ma30_today * 0.98):
+            return False
+        
+        # 均线收敛或多头排列
+        long_ma_avg = (ma20_today + ma30_today) / 2
+        short_ma_avg = (ma5_today + ma10_today) / 2
+        
+        if long_ma_avg > 0:
+            ma_spread = abs(short_ma_avg - long_ma_avg) / long_ma_avg
+            # 均线收敛或短期在长期上方
+            if not (ma_spread < self.ma_converge_threshold or short_ma_avg >= long_ma_avg):
+                return False
+        
+        # 11. 知行约束（当日）
+        if not zx_condition_at_positions(
+            hist, 
+            require_close_gt_long=True, 
+            require_short_gt_long=True, 
+            pos=None
+        ):
+            return False
+        
+        return True
+    
+    def select(
+        self, 
+        date: pd.Timestamp, 
+        data: Dict[str, pd.DataFrame]
+    ) -> List[str]:
+        """批量选股接口"""
+        picks: List[str] = []
+        need_len = self.max_window + 20
+        
+        for code, df in data.items():
+            hist = df[df["date"] <= date].tail(need_len)
+            if len(hist) < self.lookback_days + 10:
+                continue
+            
+            if self._passes_filters(hist):
+                picks.append(code)
+        
         return picks

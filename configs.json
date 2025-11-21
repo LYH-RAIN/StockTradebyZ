@@ -72,6 +72,24 @@
         "ma60_slope_days": 5,
         "max_window": 120        
       }
+    },
+    {
+      "class": "BreakoutPreviousHighSelector",
+      "alias": "出坑战法",
+      "activate": true,
+      "params": {
+        "lookback_days": 60,
+        "consolidation_min_days": 5,
+        "consolidation_max_days": 30,
+        "approach_pct": 0.15,
+        "vol_ratio_threshold": 2.0,
+        "turnover_threshold": 0.05,
+        "consolidation_shrink_ratio": 0.6,
+        "pullback_pct_min": 0.05,
+        "pullback_pct_max": 0.25,
+        "ma_converge_threshold": 0.05,
+        "max_window": 120
+      }
     }
   ]
 }

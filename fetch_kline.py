@@ -163,7 +163,7 @@ def fetch_one(
                 logger.error(f"{code} 第 {attempt} 次抓取疑似被封禁，沉睡 {COOLDOWN_SECS} 秒")
                 _cool_sleep(COOLDOWN_SECS)
             else:
-                silent_seconds = 15 * attempt
+                silent_seconds = 20 * attempt
                 logger.info(f"{code} 第 {attempt} 次抓取失败，{silent_seconds} 秒后重试：{e}")
                 time.sleep(silent_seconds)
     else:
@@ -177,6 +177,7 @@ def main():
     parser.add_argument("--end", default="today", help="结束日期 YYYYMMDD 或 'today'")
     # 股票清单与板块过滤
     parser.add_argument("--stocklist", type=Path, default=Path("./stocklist.csv"), help="股票清单CSV路径（需含 ts_code 或 symbol）")
+    parser.add_argument("--codes", type=str, help="指定股票代码列表，空格分隔，如：'000001 000002 600000'（优先级高于stocklist）")
     parser.add_argument(
         "--exclude-boards",
         nargs="*",
@@ -206,18 +207,30 @@ def main():
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # ---------- 从 stocklist.csv 读取股票池 ---------- #
-    exclude_boards = set(args.exclude_boards or [])
-    codes = load_codes_from_stocklist(args.stocklist, exclude_boards)
+    # ---------- 获取股票代码列表 ---------- #
+    if args.codes:
+        # 如果指定了--codes参数，优先使用
+        codes = [c.strip().zfill(6) for c in args.codes.split()]
+        codes = list(dict.fromkeys(codes))  # 去重保持顺序
+        logger.info("使用指定的股票代码列表，共 %d 只股票", len(codes))
+    else:
+        # 否则从 stocklist.csv 读取
+        exclude_boards = set(args.exclude_boards or [])
+        codes = load_codes_from_stocklist(args.stocklist, exclude_boards)
 
     if not codes:
-        logger.error("stocklist 为空或被过滤后无代码，请检查。")
+        logger.error("股票代码列表为空，请检查。")
         sys.exit(1)
-
-    logger.info(
-        "开始抓取 %d 支股票 | 数据源:Tushare(日线,qfq) | 日期:%s → %s | 排除:%s",
-        len(codes), start, end, ",".join(sorted(exclude_boards)) or "无",
-    )
+    if codes:
+        logger.info(
+            "开始抓取 %d 支股票 | 数据源:Tushare(日线,qfq) | 日期:%s → %s | 整体:%s",
+            len(codes), start, end, codes 
+        )
+    else:
+        logger.info(
+            "开始抓取 %d 支股票 | 数据源:Tushare(日线,qfq) | 日期:%s → %s | 排除:%s",
+            len(codes), start, end, ",".join(sorted(exclude_boards)) or "无",
+        )
 
     # ---------- 多线程抓取（全量覆盖） ---------- #
     with ThreadPoolExecutor(max_workers=args.workers) as executor:
