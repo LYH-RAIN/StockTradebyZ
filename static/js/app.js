@@ -3,6 +3,22 @@ let currentSelector = null;
 let currentStocks = [];
 let showDetails = false;
 
+// 工具函数：获取雪球网链接
+function getXueqiuUrl(code) {
+    // 判断市场
+    let market = '';
+    if (code.startsWith('6')) {
+        market = 'SH';  // 上海
+    } else if (code.startsWith('0') || code.startsWith('3')) {
+        market = 'SZ';  // 深圳
+    } else if (code.startsWith('688') || code.startsWith('689')) {
+        market = 'SH';  // 科创板
+    } else {
+        market = 'SZ';  // 默认深圳
+    }
+    return `https://xueqiu.com/S/${market}${code}`;
+}
+
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
     loadSelectors();
@@ -134,10 +150,17 @@ function displayStockGrid(stocks) {
 function createStockCard(stock) {
     const changeClass = getChangeClass(stock.change);
     const changeSymbol = stock.change >= 0 ? '+' : '';
+    const xueqiuUrl = getXueqiuUrl(stock.code);
     
     return `
-        <div class="stock-card" onclick="showChart('${stock.code}')">
-            <div class="stock-code">${stock.code}</div>
+        <div class="stock-card" onclick="showChart('${stock.code}', currentSelector === '出坑战法' ? 'breakout' : 'default')">
+            <div class="stock-code">
+                ${stock.code}
+                <a href="${xueqiuUrl}" target="_blank" onclick="event.stopPropagation()" 
+                   style="margin-left: 8px; font-size: 12px; color: #1890ff; text-decoration: none; border: 1px solid #1890ff; padding: 2px 6px; border-radius: 3px;">
+                    雪球
+                </a>
+            </div>
             <div class="stock-price ${changeClass}">
                 ¥${stock.close.toFixed(2)}
             </div>
@@ -206,7 +229,14 @@ async function showChart(code, strategy = 'default') {
     const modal = document.getElementById('chart-modal');
     modal.classList.add('show');
     
-    document.getElementById('modal-title').textContent = `${code} - K线图`;
+    // 设置标题并添加雪球网链接
+    const xueqiuUrl = getXueqiuUrl(code);
+    document.getElementById('modal-title').innerHTML = `
+        ${code} - K线图
+        <a href="${xueqiuUrl}" target="_blank" style="margin-left: 15px; font-size: 14px; color: #1890ff; text-decoration: none; border: 1px solid #1890ff; padding: 4px 12px; border-radius: 4px; transition: all 0.3s;">
+            <span style="font-size: 16px; margin-right: 4px;">⚡</span>查看雪球
+        </a>
+    `;
     
     // 显示加载状态
     document.getElementById('kline-chart').innerHTML = 
@@ -330,28 +360,32 @@ function drawKlineChart(data) {
         hovertemplate: 'MA60: %{y:.2f}<extra></extra>'
     };
     
-    // 提取交易信号标记
-    const b1Signals = (data.signals || []).filter(s => s.type === 'B1');
-    const b2Signals = (data.signals || []).filter(s => s.type === 'B2');
-    const s1Signals = (data.signals || []).filter(s => s.type === 'S1');
+    // 提取交易信号标记 - 根据信号类型判断战法
+    const signals = data.signals || [];
+    const isBreakout = signals.some(s => s.type === 'B' || s.type === 'S');
     
-    // B1买点标记（绿色向上三角）
+    // 根据战法类型分组信号
+    const b1Signals = isBreakout ? signals.filter(s => s.type === 'B') : signals.filter(s => s.type === 'B1');
+    const b2Signals = isBreakout ? [] : signals.filter(s => s.type === 'B2');
+    const s1Signals = isBreakout ? signals.filter(s => s.type === 'S') : signals.filter(s => s.type === 'S1');
+    
+    // 买点标记（绿色向上三角）
     const b1Markers = {
         x: b1Signals.map(s => s.date),
         y: b1Signals.map(s => s.price * 0.97), // 标记在价格下方3%
         mode: 'markers+text',
         type: 'scatter',
-        name: 'B1买点',
+        name: isBreakout ? 'B买点' : 'B1买点',
         marker: {
             color: '#00C853',
             size: 15,
             symbol: 'triangle-up',
             line: {color: '#fff', width: 2}
         },
-        text: b1Signals.map(() => 'B1'),
+        text: b1Signals.map(s => s.type),
         textposition: 'bottom center',
         textfont: {color: '#00C853', size: 12, family: 'Arial Black'},
-        hovertemplate: '<b>B1买点</b><br>价格: %{y:.2f}<br>%{x}<extra></extra>'
+        hovertemplate: `<b>${isBreakout ? 'B买点' : 'B1买点'}</b><br>价格: %{y:.2f}<br>%{x}<extra></extra>`
     };
     
     // B2加仓标记（深绿色向上三角）
@@ -373,23 +407,23 @@ function drawKlineChart(data) {
         hovertemplate: '<b>B2加仓</b><br>价格: %{y:.2f}<br>%{x}<extra></extra>'
     };
     
-    // S1卖点标记（红色向下三角）
+    // 卖点标记（红色向下三角）
     const s1Markers = {
         x: s1Signals.map(s => s.date),
         y: s1Signals.map(s => s.price * 1.03), // 标记在价格上方3%
         mode: 'markers+text',
         type: 'scatter',
-        name: 'S1卖点',
+        name: isBreakout ? 'S卖点' : 'S1卖点',
         marker: {
             color: '#D32F2F',
             size: 15,
             symbol: 'triangle-down',
             line: {color: '#fff', width: 2}
         },
-        text: s1Signals.map(() => 'S1'),
+        text: s1Signals.map(s => s.type),
         textposition: 'top center',
         textfont: {color: '#D32F2F', size: 12, family: 'Arial Black'},
-        hovertemplate: '<b>S1卖点</b><br>价格: %{y:.2f}<br>%{x}<extra></extra>'
+        hovertemplate: `<b>${isBreakout ? 'S卖点' : 'S1卖点'}</b><br>价格: %{y:.2f}<br>%{x}<extra></extra>`
     };
     
     const chartData = [
@@ -406,8 +440,10 @@ function drawKlineChart(data) {
     if (b2Signals.length > 0) chartData.push(b2Markers);
     if (s1Signals.length > 0) chartData.push(s1Markers);
     
-    // 统计信号数量
-    const signalSummary = `B1:${b1Signals.length} | B2:${b2Signals.length} | S1:${s1Signals.length}`;
+    // 根据战法显示信号统计
+    const signalSummary = isBreakout ? 
+        `出坑战法【B:${b1Signals.length} | S:${s1Signals.length}】` :
+        `少妇战法【B1:${b1Signals.length} | B2:${b2Signals.length} | S1:${s1Signals.length}】`;
     
     const layout = {
         title: {
@@ -701,10 +737,14 @@ function drawLinkedCharts(data) {
     const priceRange = maxPrice - minPrice;
     const padding = priceRange * 0.15;
     
-    // 提取交易信号（兼容B1/B和S1/S）
-    const b1Signals = (data.signals || []).filter(s => s.type === 'B1' || s.type === 'B');
-    const b2Signals = (data.signals || []).filter(s => s.type === 'B2');
-    const s1Signals = (data.signals || []).filter(s => s.type === 'S1' || s.type === 'S');
+    // 根据信号类型判断战法
+    const signals = data.signals || [];
+    const isBreakout = signals.some(s => s.type === 'B' || s.type === 'S');
+    
+    // 提取交易信号（根据战法类型）
+    const b1Signals = isBreakout ? signals.filter(s => s.type === 'B') : signals.filter(s => s.type === 'B1');
+    const b2Signals = isBreakout ? [] : signals.filter(s => s.type === 'B2');
+    const s1Signals = isBreakout ? signals.filter(s => s.type === 'S') : signals.filter(s => s.type === 'S1');
     
     // === K线图数据 ===
     const candlestick = {
@@ -917,7 +957,10 @@ function drawLinkedCharts(data) {
     });
     
     // === 布局配置（4个子图，共享X轴实现联动） ===
-    const signalSummary = `B1:${b1Signals.length} | B2:${b2Signals.length} | S1:${s1Signals.length}`;
+    // 根据战法显示信号统计
+    const signalSummary = isBreakout ? 
+        `出坑战法【B:${b1Signals.length} | S:${s1Signals.length}】` :
+        `少妇战法【B1:${b1Signals.length} | B2:${b2Signals.length} | S1:${s1Signals.length}】`;
     
     const layout = {
         title: {

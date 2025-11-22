@@ -1,0 +1,548 @@
+2025-11-22 12:02:33,702 [INFO] 📊 开始加载数据：data
+2025-11-22 12:02:33,720 [INFO] 📋 发现 5429 只股票
+2025-11-22 12:02:33,720 [INFO] 🔄 正在加载全部 5429 只股票，请稍候...
+2025-11-22 12:02:41,300 [INFO] ✅ 成功加载 5429 只股票数据！
+2025-11-22 12:02:42,139 [INFO] 加载选择器: 少妇战法
+2025-11-22 12:02:42,139 [INFO] 加载选择器: SuperB1战法
+2025-11-22 12:02:42,139 [INFO] 加载选择器: 补票战法
+2025-11-22 12:02:42,139 [INFO] 加载选择器: 填坑战法
+2025-11-22 12:02:42,139 [INFO] 加载选择器: 上穿60放量战法
+2025-11-22 12:02:42,139 [INFO] 加载选择器: 出坑战法
+2025-11-22 12:02:42,141 [INFO] 启动Web服务: http://127.0.0.1:5000
+ * Serving Flask app 'web_app'
+ * Debug mode: off
+2025-11-22 12:02:42,148 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-11-22 12:02:42,148 [INFO] [33mPress CTRL+C to quit[0m
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(437, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-15 00:00:00'), Timestamp('2025-05-16 00:00:00'), Timestamp('2025-05-19 00:00:00')]
+2025-11-22 12:02:46,892 [INFO] 127.0.0.1 - - [22/Nov/2025 12:02:46] "GET /api/select/出坑战法 HTTP/1.1" 200 -
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_breakout_signals 开始: df.index类型=<class 'pandas.core.indexes.range.RangeIndex'>, df.index前5个=[187, 188, 189, 190, 191]
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=2024-11-29 00:00:00
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=25
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG: 完整数据B信号: 54个, 截取后B信号: 25个
+DEBUG API signal列统计: {'': 95, 'B': 25}
+DEBUG 发现信号: signal='B', date=2025-05-29 00:00:00, price=8.74
+DEBUG 发现信号: signal='B', date=2025-06-09 00:00:00, price=8.52
+DEBUG 发现信号: signal='B', date=2025-06-10 00:00:00, price=8.51
+DEBUG API: 信号数=25, 过滤前=120, 过滤后=120
+2025-11-22 12:02:47,170 [INFO] 127.0.0.1 - - [22/Nov/2025 12:02:47] "GET /api/stock/603027?days=120&strategy=breakout HTTP/1.1" 200 -
+2025-11-22 12:11:34,237 [INFO] 127.0.0.1 - - [22/Nov/2025 12:11:34] "GET / HTTP/1.1" 200 -
+2025-11-22 12:11:34,268 [INFO] 127.0.0.1 - - [22/Nov/2025 12:11:34] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-11-22 12:11:34,310 [INFO] 127.0.0.1 - - [22/Nov/2025 12:11:34] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-22 12:11:34,310 [INFO] 127.0.0.1 - - [22/Nov/2025 12:11:34] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-11-22 12:11:36,040 [INFO] 127.0.0.1 - - [22/Nov/2025 12:11:36] "GET /api/selectors HTTP/1.1" 200 -
+2025-11-22 12:11:37,160 [INFO] 127.0.0.1 - - [22/Nov/2025 12:11:37] "GET /api/latest_date HTTP/1.1" 200 -
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(437, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-15 00:00:00'), Timestamp('2025-05-16 00:00:00'), Timestamp('2025-05-19 00:00:00')]
+2025-11-22 12:11:44,805 [INFO] 127.0.0.1 - - [22/Nov/2025 12:11:44] "GET /api/select/出坑战法 HTTP/1.1" 200 -
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG API signal列统计: {'': 119, 'S1': 1}
+DEBUG 发现信号: signal='S1', date=2025-07-11 00:00:00, price=29.97
+DEBUG API: 信号数=1, 过滤前=120, 过滤后=120
+2025-11-22 12:11:48,890 [INFO] 127.0.0.1 - - [22/Nov/2025 12:11:48] "GET /api/stock/002990?days=120&strategy=default HTTP/1.1" 200 -
+2025-11-22 12:11:56,009 [INFO] 127.0.0.1 - - [22/Nov/2025 12:11:56] "GET /backtest HTTP/1.1" 200 -
+2025-11-22 12:11:56,032 [INFO] 127.0.0.1 - - [22/Nov/2025 12:11:56] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-11-22 12:11:56,052 [INFO] 127.0.0.1 - - [22/Nov/2025 12:11:56] "GET /static/css/style.css HTTP/1.1" 200 -
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(457, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(457, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(365, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2024-05-24 00:00:00'), Timestamp('2024-05-27 00:00:00'), Timestamp('2024-05-28 00:00:00')]
+2025-11-22 12:11:57,945 [INFO] 127.0.0.1 - - [22/Nov/2025 12:11:57] "GET /api/backtest?code=603027&days=365&strategy=default&stop_loss=0.05 HTTP/1.1" 200 -
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(457, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(457, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_breakout_signals 开始: df.index类型=<class 'pandas.core.indexes.range.RangeIndex'>, df.index前5个=[0, 1, 2, 3, 4]
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=2024-02-05 00:00:00
+DEBUG: tail(days)后，df_result形状=(365, 26), date列NaT数=0, B信号行数=86
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2024-05-24 00:00:00'), Timestamp('2024-05-27 00:00:00'), Timestamp('2024-05-28 00:00:00')]
+DEBUG: 完整数据B信号: 107个, 截取后B信号: 86个
+2025-11-22 12:12:01,980 [INFO] 127.0.0.1 - - [22/Nov/2025 12:12:01] "GET /api/backtest?code=603027&days=365&strategy=breakout&stop_loss=0.05 HTTP/1.1" 200 -
+2025-11-22 12:12:39,757 [INFO] 127.0.0.1 - - [22/Nov/2025 12:12:39] "GET / HTTP/1.1" 200 -
+2025-11-22 12:12:39,786 [INFO] 127.0.0.1 - - [22/Nov/2025 12:12:39] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-11-22 12:12:39,820 [INFO] 127.0.0.1 - - [22/Nov/2025 12:12:39] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-11-22 12:12:39,825 [INFO] 127.0.0.1 - - [22/Nov/2025 12:12:39] "GET /static/js/app.js HTTP/1.1" 200 -
+2025-11-22 12:12:41,520 [INFO] 127.0.0.1 - - [22/Nov/2025 12:12:41] "GET /api/selectors HTTP/1.1" 200 -
+2025-11-22 12:12:42,579 [INFO] 127.0.0.1 - - [22/Nov/2025 12:12:42] "GET /api/latest_date HTTP/1.1" 200 -
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(437, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-15 00:00:00'), Timestamp('2025-05-16 00:00:00'), Timestamp('2025-05-19 00:00:00')]
+2025-11-22 12:12:46,885 [INFO] 127.0.0.1 - - [22/Nov/2025 12:12:46] "GET /api/select/出坑战法 HTTP/1.1" 200 -
+/Users/liuyuhang/cursor/StockTradebyZ/web_app.py:214: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['RSV'].fillna(0, inplace=True)
+DEBUG get_stock_data 开始: date列类型=datetime64[ns], date是索引=False
+DEBUG: 过滤volume>0后，df形状=(457, 6), date列NaT数=0
+DEBUG: tail后，df_full形状=(270, 6), date列NaT数=0
+DEBUG: calculate_macd后，date列NaT数=0
+DEBUG: calculate_kdj后，date列NaT数=0
+DEBUG: calculate_trend_lines后，date列NaT数=0
+DEBUG _identify_trading_signals 开始: df形状=(270, 24), date列NaT数=0
+DEBUG 添加signal列后: date列NaT数=0
+DEBUG _identify_trading_signals 结束: date列NaT数=0
+DEBUG: identify_signals后，date列NaT数=0, B信号行的date示例=N/A
+DEBUG: tail(days)后，df_result形状=(120, 26), date列NaT数=0, B信号行数=0
+DEBUG: reset_index后，date列NaT数=0, 前3个date=[Timestamp('2025-05-29 00:00:00'), Timestamp('2025-05-30 00:00:00'), Timestamp('2025-06-03 00:00:00')]
+DEBUG API signal列统计: {'': 119, 'S1': 1}
+DEBUG 发现信号: signal='S1', date=2025-07-11 00:00:00, price=29.97
+DEBUG API: 信号数=1, 过滤前=120, 过滤后=120
+2025-11-22 12:12:55,482 [INFO] 127.0.0.1 - - [22/Nov/2025 12:12:55] "GET /api/stock/002990?days=120&strategy=default HTTP/1.1" 200 -

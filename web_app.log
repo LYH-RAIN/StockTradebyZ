@@ -1,0 +1,16 @@
+2025-11-22 14:36:22,695 [INFO] 📊 开始加载数据：data
+2025-11-22 14:36:22,720 [INFO] 📋 发现 5429 只股票
+2025-11-22 14:36:22,720 [INFO] 🔄 正在加载全部 5429 只股票，请稍候...
+2025-11-22 14:36:29,641 [INFO] ✅ 成功加载 5429 只股票数据！
+2025-11-22 14:36:30,436 [INFO] 加载选择器: 少妇战法
+2025-11-22 14:36:30,436 [INFO] 加载选择器: SuperB1战法
+2025-11-22 14:36:30,436 [INFO] 加载选择器: 补票战法
+2025-11-22 14:36:30,436 [INFO] 加载选择器: 填坑战法
+2025-11-22 14:36:30,436 [INFO] 加载选择器: 上穿60放量战法
+2025-11-22 14:36:30,436 [INFO] 加载选择器: 出坑战法
+2025-11-22 14:36:30,438 [INFO] 启动Web服务: http://127.0.0.1:5000
+ * Serving Flask app 'web_app'
+ * Debug mode: off
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+On macOS, try disabling the 'AirPlay Receiver' service from System Preferences -> General -> AirDrop & Handoff.

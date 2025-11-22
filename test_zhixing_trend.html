@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>知行趋势线测试</title>
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js@2.27.0/dist/plotly.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        h1 { color: #333; border-bottom: 3px solid #1976D2; padding-bottom: 10px; }
+        .info { background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .success { color: #4caf50; font-weight: bold; }
+        .warning { color: #ff9800; font-weight: bold; }
+        .error { color: #f44336; font-weight: bold; }
+        #chart { width: 100%; height: 600px; margin: 20px 0; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+        .stat-card { background: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #1976D2; }
+        .stat-label { font-size: 12px; color: #666; }
+        .stat-value { font-size: 24px; font-weight: bold; color: #333; margin: 5px 0; }
+        button { background: #1976D2; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #1565C0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📈 知行体系趋势线测试</h1>
+        
+        <div class="info">
+            <h3>📊 公式说明</h3>
+            <p><strong>短期趋势线</strong> = EMA(EMA(CLOSE, 10), 10) - 双重指数移动平均</p>
+            <p><strong>知行多空线</strong> = (MA(14) + MA(28) + MA(57) + MA(114)) / 4 - 四均线平均</p>
+            <p><strong>差值百分比</strong> = ABS((CLOSE - 短期趋势线) / 短期趋势线) × 100</p>
+        </div>
+        
+        <button onclick="loadData()">🔄 加载测试数据（603027）</button>
+        
+        <div id="status" style="margin: 20px 0;"></div>
+        
+        <div class="stats" id="stats"></div>
+        
+        <div id="chart"></div>
+        
+        <div id="trend-analysis"></div>
+    </div>
+    
+    <script>
+        async function loadData() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = '<p>⏳ 加载中...</p>';
+            
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/stock/603027?days=120');
+                const data = await response.json();
+                
+                if (!data.success) {
+                    statusDiv.innerHTML = `<p class="error">❌ 加载失败: ${data.error}</p>`;
+                    return;
+                }
+                
+                statusDiv.innerHTML = '<p class="success">✅ 数据加载成功</p>';
+                
+                // 显示统计信息
+                displayStats(data);
+                
+                // 绘制图表
+                drawChart(data);
+                
+                // 趋势分析
+                analyzeTrend(data);
+                
+            } catch (error) {
+                statusDiv.innerHTML = `<p class="error">❌ 错误: ${error.message}</p>`;
+            }
+        }
+        
+        function displayStats(data) {
+            const idx = data.dates.length - 1;
+            const close = data.close[idx];
+            const trendShort = data.trend_short[idx];
+            const trendLong = data.trend_long[idx];
+            const diffPct = data.trend_diff_pct[idx];
+            const shortAbove = data.trend_short_above[idx];
+            
+            const statsHtml = `
+                <div class="stat-card">
+                    <div class="stat-label">收盘价</div>
+                    <div class="stat-value">¥${close.toFixed(2)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">短期趋势线</div>
+                    <div class="stat-value">¥${trendShort.toFixed(2)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">知行多空线</div>
+                    <div class="stat-value">¥${trendLong.toFixed(2)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">差值百分比</div>
+                    <div class="stat-value">${diffPct.toFixed(2)}%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">短期在上</div>
+                    <div class="stat-value">${shortAbove ? '✅ 是' : '❌ 否'}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">数据点数</div>
+                    <div class="stat-value">${data.dates.length}</div>
+                </div>
+            `;
+            
+            document.getElementById('stats').innerHTML = statsHtml;
+        }
+        
+        function drawChart(data) {
+            // K线
+            const candlestick = {
+                x: data.dates,
+                open: data.open,
+                high: data.high,
+                low: data.low,
+                close: data.close,
+                type: 'candlestick',
+                name: 'K线',
+                increasing: {line: {color: '#ef5350'}, fillcolor: '#ef5350'},
+                decreasing: {line: {color: '#26a69a'}, fillcolor: '#26a69a'}
+            };
+            
+            // 短期趋势线
+            const trendShort = {
+                x: data.dates,
+                y: data.trend_short,
+                type: 'scatter',
+                mode: 'lines',
+                name: '短期趋势线 EMA(EMA(10))',
+                line: {color: '#FF6B6B', width: 3}
+            };
+            
+            // 知行多空线
+            const trendLong = {
+                x: data.dates,
+                y: data.trend_long,
+                type: 'scatter',
+                mode: 'lines',
+                name: '知行多空线 (MA14+28+57+114)/4',
+                line: {color: '#1976D2', width: 3}
+            };
+            
+            // 交易信号
+            const b1Signals = (data.signals || []).filter(s => s.type === 'B1');
+            const s1Signals = (data.signals || []).filter(s => s.type === 'S1');
+            
+            const traces = [candlestick, trendShort, trendLong];
+            
+            if (b1Signals.length > 0) {
+                traces.push({
+                    x: b1Signals.map(s => s.date),
+                    y: b1Signals.map(s => s.price * 0.97),
+                    mode: 'markers+text',
+                    type: 'scatter',
+                    name: 'B1买点',
+                    marker: {color: '#00C853', size: 15, symbol: 'triangle-up'},
+                    text: b1Signals.map(() => 'B1'),
+                    textposition: 'bottom center'
+                });
+            }
+            
+            if (s1Signals.length > 0) {
+                traces.push({
+                    x: s1Signals.map(s => s.date),
+                    y: s1Signals.map(s => s.price * 1.03),
+                    mode: 'markers+text',
+                    type: 'scatter',
+                    name: 'S1卖点',
+                    marker: {color: '#D32F2F', size: 15, symbol: 'triangle-down'},
+                    text: s1Signals.map(() => 'S1'),
+                    textposition: 'top center'
+                });
+            }
+            
+            const layout = {
+                title: `603027 - 知行体系趋势线 【B1:${b1Signals.length} S1:${s1Signals.length}】`,
+                xaxis: {
+                    type: 'date',
+                    rangeslider: {visible: false}
+                },
+                yaxis: {
+                    title: '价格 (¥)'
+                },
+                height: 600,
+                showlegend: true,
+                legend: {
+                    orientation: 'h',
+                    y: -0.15
+                }
+            };
+            
+            Plotly.newPlot('chart', traces, layout);
+        }
+        
+        function analyzeTrend(data) {
+            const idx = data.dates.length - 1;
+            const close = data.close[idx];
+            const trendShort = data.trend_short[idx];
+            const trendLong = data.trend_long[idx];
+            const diffPct = data.trend_diff_pct[idx];
+            const shortAbove = data.trend_short_above[idx];
+            
+            let trendType = '';
+            let trendColor = '';
+            let advice = '';
+            
+            if (shortAbove && close > trendShort) {
+                trendType = '🟢 强势多头';
+                trendColor = '#4caf50';
+                advice = '✅ 最佳买入时机！价格在短期趋势线上方，短期趋势线在知行多空线上方。B1信号可重仓（30-50%）。';
+            } else if (shortAbove) {
+                trendType = '🟡 中性整理';
+                trendColor = '#ff9800';
+                advice = '⚠️ 谨慎买入。短期趋势向上，但价格在短期趋势线下方。B1信号轻仓（10-20%）。';
+            } else {
+                trendType = '🔴 弱势空头';
+                trendColor = '#f44336';
+                advice = '❌ 不建议买入。短期趋势线在知行多空线下方，趋势偏弱。即使出现B1信号也要谨慎。';
+            }
+            
+            let diffAdvice = '';
+            if (diffPct < 1) {
+                diffAdvice = '价格贴近趋势线，可能即将突破或回调。';
+            } else if (diffPct < 3) {
+                diffAdvice = '差值正常，趋势延续中。';
+            } else if (diffPct < 5) {
+                diffAdvice = '差值较大，警惕回调风险。';
+            } else {
+                diffAdvice = '差值过大，高概率回调，不建议追高。';
+            }
+            
+            const analysisHtml = `
+                <div class="info" style="border-left: 5px solid ${trendColor};">
+                    <h3>📊 趋势分析</h3>
+                    <p><strong>趋势类型：</strong><span style="color: ${trendColor}; font-size: 20px;">${trendType}</span></p>
+                    <p><strong>操作建议：</strong>${advice}</p>
+                    <p><strong>差值分析：</strong>${diffAdvice}</p>
+                    <hr>
+                    <h4>技术细节：</h4>
+                    <ul>
+                        <li>收盘价 ${close > trendShort ? '>' : '<'} 短期趋势线 (${close.toFixed(2)} vs ${trendShort.toFixed(2)})</li>
+                        <li>短期趋势线 ${shortAbove ? '>' : '<'} 知行多空线 (${trendShort.toFixed(2)} vs ${trendLong.toFixed(2)})</li>
+                        <li>差值百分比：${diffPct.toFixed(2)}%</li>
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('trend-analysis').innerHTML = analysisHtml;
+        }
+        
+        // 页面加载后自动执行
+        window.addEventListener('load', () => {
+            setTimeout(loadData, 500);
+        });
+    </script>
+</body>
+</html>

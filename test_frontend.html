@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>前端功能测试</title>
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js@2.27.0/dist/plotly.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        #test-chart { width: 100%; height: 400px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>📊 前端功能测试页面</h1>
+    
+    <div class="test-section">
+        <h2>测试1: Plotly库加载</h2>
+        <div id="test1-result">检测中...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>测试2: API连接测试</h2>
+        <div id="test2-result">检测中...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>测试3: 数据完整性测试</h2>
+        <div id="test3-result">检测中...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>测试4: K线图渲染测试</h2>
+        <div id="test4-result">检测中...</div>
+        <div id="test-chart"></div>
+    </div>
+    
+    <script>
+        // 测试1: Plotly库
+        function test1() {
+            const result = document.getElementById('test1-result');
+            if (typeof Plotly !== 'undefined') {
+                result.innerHTML = '<span class="success">✅ Plotly库加载成功</span>';
+                result.innerHTML += `<br>版本: ${Plotly.version || '未知'}`;
+                return true;
+            } else {
+                result.innerHTML = '<span class="error">❌ Plotly库未加载</span>';
+                return false;
+            }
+        }
+        
+        // 测试2: API连接
+        async function test2() {
+            const result = document.getElementById('test2-result');
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/latest_date');
+                const data = await response.json();
+                result.innerHTML = '<span class="success">✅ API连接成功</span>';
+                result.innerHTML += `<br>最新日期: ${data.date}`;
+                return true;
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ API连接失败: ${error.message}</span>`;
+                return false;
+            }
+        }
+        
+        // 测试3: 数据完整性
+        async function test3() {
+            const result = document.getElementById('test3-result');
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/stock/603027?days=120');
+                const data = await response.json();
+                
+                if (!data.success) {
+                    result.innerHTML = `<span class="error">❌ API返回错误: ${data.error}</span>`;
+                    return false;
+                }
+                
+                // 检查必要字段
+                const required = ['dates', 'open', 'close', 'high', 'low', 'volume',
+                                'ma5', 'ma20', 'ma60', 'trend_short', 'trend_long',
+                                'dif', 'dea', 'macd', 'k', 'd', 'j', 'signals'];
+                
+                const missing = required.filter(f => !(f in data));
+                
+                if (missing.length > 0) {
+                    result.innerHTML = `<span class="error">❌ 缺失字段: ${missing.join(', ')}</span>`;
+                    return false;
+                }
+                
+                result.innerHTML = '<span class="success">✅ 数据完整</span>';
+                result.innerHTML += `<br>数据点: ${data.dates.length}`;
+                result.innerHTML += `<br>信号数: B1=${data.signals.filter(s => s.type === 'B1').length}, `;
+                result.innerHTML += `B2=${data.signals.filter(s => s.type === 'B2').length}, `;
+                result.innerHTML += `S1=${data.signals.filter(s => s.type === 'S1').length}`;
+                
+                return data;
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ 测试失败: ${error.message}</span>`;
+                return false;
+            }
+        }
+        
+        // 测试4: K线图渲染
+        async function test4(data) {
+            const result = document.getElementById('test4-result');
+            
+            if (!data) {
+                result.innerHTML = '<span class="warning">⚠️ 跳过（数据获取失败）</span>';
+                return false;
+            }
+            
+            try {
+                // 提取信号
+                const b1Signals = (data.signals || []).filter(s => s.type === 'B1');
+                const b2Signals = (data.signals || []).filter(s => s.type === 'B2');
+                const s1Signals = (data.signals || []).filter(s => s.type === 'S1');
+                
+                // 简单K线图
+                const candlestick = {
+                    x: data.dates,
+                    open: data.open,
+                    high: data.high,
+                    low: data.low,
+                    close: data.close,
+                    type: 'candlestick',
+                    name: 'K线'
+                };
+                
+                // 趋势线
+                const trendShort = {
+                    x: data.dates,
+                    y: data.trend_short,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: '短期趋势',
+                    line: {color: '#FF6B6B', width: 2}
+                };
+                
+                const trendLong = {
+                    x: data.dates,
+                    y: data.trend_long,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: '长期趋势',
+                    line: {color: '#1976D2', width: 2}
+                };
+                
+                // B1标记
+                const b1Markers = {
+                    x: b1Signals.map(s => s.date),
+                    y: b1Signals.map(s => s.price * 0.97),
+                    mode: 'markers+text',
+                    type: 'scatter',
+                    name: 'B1买点',
+                    marker: {color: '#00C853', size: 15, symbol: 'triangle-up'},
+                    text: b1Signals.map(() => 'B1'),
+                    textposition: 'bottom center'
+                };
+                
+                const chartData = [candlestick, trendShort, trendLong];
+                if (b1Signals.length > 0) chartData.push(b1Markers);
+                
+                const layout = {
+                    title: `${data.code} - 测试图表 [B1:${b1Signals.length} B2:${b2Signals.length} S1:${s1Signals.length}]`,
+                    xaxis: { type: 'date', rangeslider: {visible: false} },
+                    yaxis: { title: '价格' },
+                    height: 400
+                };
+                
+                await Plotly.newPlot('test-chart', chartData, layout);
+                
+                result.innerHTML = '<span class="success">✅ K线图渲染成功</span>';
+                result.innerHTML += `<br>图表包含: K线 + 趋势线 + 交易信号`;
+                return true;
+            } catch (error) {
+                result.innerHTML = `<span class="error">❌ 渲染失败: ${error.message}</span>`;
+                console.error('渲染错误:', error);
+                return false;
+            }
+        }
+        
+        // 运行所有测试
+        async function runAllTests() {
+            console.log('开始测试...');
+            
+            const test1Result = test1();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const test2Result = await test2();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const test3Data = await test3();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await test4(test3Data);
+            
+            console.log('测试完成！');
+        }
+        
+        // 页面加载后运行测试
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 1000);
+        });
+    </script>
+</body>
+</html>
+

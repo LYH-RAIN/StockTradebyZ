@@ -1118,7 +1118,14 @@ class BreakoutPreviousHighSelector:
         date: pd.Timestamp, 
         data: Dict[str, pd.DataFrame]
     ) -> List[str]:
-        """批量选股接口"""
+        """
+        批量选股接口
+        
+        重要：选股结果 = 今天有买入信号的股票
+        确保用户看到的选股结果就是当前可以买入的股票
+        """
+        from signal_identifier import SignalIdentifier
+        
         picks: List[str] = []
         need_len = self.max_window + 20
         
@@ -1127,7 +1134,16 @@ class BreakoutPreviousHighSelector:
             if len(hist) < self.lookback_days + 10:
                 continue
             
-            if self._passes_filters(hist):
+            # 第一步：基础技术条件筛选（快速过滤）
+            if not self._passes_filters(hist):
+                continue
+            
+            # 第二步：使用统一的信号识别逻辑
+            signals = SignalIdentifier.identify_breakout_signals(hist, max_days_lookback=self.lookback_days)
+            
+            # 第三步：只选有最近2天内B信号的股票
+            # 这确保了"选出的股票 = 可以立即买入的股票"
+            if SignalIdentifier.has_recent_signal(signals, date, signal_type='B', max_days=2):
                 picks.append(code)
         
         return picks
