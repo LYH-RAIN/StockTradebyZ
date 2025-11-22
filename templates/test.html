@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Web系统测试页面</h1>
+    
+    <div class="test-box">
+        <h2>1. 基础测试</h2>
+        <p id="basic-test">测试中...</p>
+    </div>
+    
+    <div class="test-box">
+        <h2>2. API测试</h2>
+        <p id="api-test">测试中...</p>
+        <pre id="api-result"></pre>
+    </div>
+    
+    <div class="test-box">
+        <h2>3. 选择器测试</h2>
+        <p id="selector-test">测试中...</p>
+        <div id="selector-list"></div>
+    </div>
+    
+    <script>
+        // 基础测试
+        document.getElementById('basic-test').innerHTML = '<span class="success">✅ JavaScript正常工作</span>';
+        
+        // API测试
+        fetch('/api/latest_date')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('api-test').innerHTML = '<span class="success">✅ API正常响应</span>';
+                document.getElementById('api-result').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('api-test').innerHTML = '<span class="error">❌ API错误</span>';
+                document.getElementById('api-result').textContent = error.message;
+            });
+        
+        // 选择器测试
+        fetch('/api/selectors')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('selector-test').innerHTML = '<span class="success">✅ 选择器加载成功</span>';
+                let html = '<ul>';
+                data.forEach(s => {
+                    html += `<li>${s.name} (${s.class})</li>`;
+                });
+                html += '</ul>';
+                document.getElementById('selector-list').innerHTML = html;
+            })
+            .catch(error => {
+                document.getElementById('selector-test').innerHTML = '<span class="error">❌ 选择器加载失败</span>';
+                document.getElementById('selector-list').textContent = error.message;
+            });
+    </script>
+</body>
+</html>
+

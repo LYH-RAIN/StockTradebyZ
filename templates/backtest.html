@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>战法回测</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .backtest-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        .strategy-selector {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .param-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .param-item label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .param-item input, .param-item select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .run-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .run-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .results-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .trades-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .trades-table th {
+            background: #f5f5f5;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .trades-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .profit { color: #4caf50; font-weight: bold; }
+        .loss { color: #f44336; font-weight: bold; }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #f5f5f5;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="backtest-container">
+        <h1>📊 战法回测系统</h1>
+        
+        <div class="strategy-selector">
+            <h2>回测参数设置</h2>
+            
+            <div class="param-group">
+                <div class="param-item">
+                    <label>选择战法:</label>
+                    <select id="strategy-select">
+                        <option value="default">少妇战法（B1/S1）</option>
+                        <option value="breakout">出坑战法（B/S）</option>
+                    </select>
+                </div>
+                
+                <div class="param-item">
+                    <label>股票代码:</label>
+                    <input type="text" id="stock-code" placeholder="例如: 603027" value="603027">
+                </div>
+                
+                <div class="param-item">
+                    <label>回测天数:</label>
+                    <input type="number" id="backtest-days" value="365" min="30" max="1000">
+                </div>
+                
+                <div class="param-item">
+                    <label>止损比例(%):</label>
+                    <input type="number" id="stop-loss" value="5" min="1" max="20" step="0.5">
+                </div>
+            </div>
+            
+            <button class="run-btn" onclick="runBacktest()">🚀 开始回测</button>
+        </div>
+        
+        <div id="loading" style="display:none; text-align:center; padding:40px;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width:0%">0%</div>
+            </div>
+            <p>正在回测中，请稍候...</p>
+        </div>
+        
+        <div id="results" class="results-container" style="display:none;">
+            <h2>回测结果</h2>
+            <div id="results-content"></div>
+        </div>
+    </div>
+    
+    <script>
+        async function runBacktest() {
+            const strategy = document.getElementById('strategy-select').value;
+            const code = document.getElementById('stock-code').value.trim();
+            const days = document.getElementById('backtest-days').value;
+            const stopLoss = document.getElementById('stop-loss').value / 100;
+            
+            if (!code) {
+                alert('请输入股票代码');
+                return;
+            }
+            
+            // 显示加载
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            
+            // 模拟进度
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 10;
+                if (progress > 90) progress = 90;
+                document.getElementById('progress').style.width = progress + '%';
+                document.getElementById('progress').textContent = progress + '%';
+            }, 200);
+            
+            try {
+                const response = await fetch(`/api/backtest?code=${code}&days=${days}&strategy=${strategy}&stop_loss=${stopLoss}`);
+                const data = await response.json();
+                
+                clearInterval(progressInterval);
+                document.getElementById('progress').style.width = '100%';
+                document.getElementById('progress').textContent = '100%';
+                
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('results').style.display = 'block';
+                    displayResults(data, strategy);
+                }, 500);
+                
+            } catch (error) {
+                clearInterval(progressInterval);
+                document.getElementById('loading').style.display = 'none';
+                alert('回测失败: ' + error.message);
+            }
+        }
+        
+        function displayResults(data, strategy) {
+            if (!data.success) {
+                document.getElementById('results-content').innerHTML = 
+                    `<p style="color: red;">错误: ${data.error}</p>`;
+                return;
+            }
+            
+            const bt = data.backtest;
+            const strategyName = strategy === 'default' ? '少妇战法' : '出坑战法';
+            
+            let html = `
+                <h3>${data.code} - ${strategyName}</h3>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">交易次数</div>
+                        <div class="stat-value">${bt.total_trades}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">胜率</div>
+                        <div class="stat-value" style="color: ${bt.win_rate >= 60 ? '#4caf50' : (bt.win_rate >= 40 ? '#ff9800' : '#f44336')}">${bt.win_rate}%</div>
+                        <div style="font-size:11px; color:#999; margin-top:5px;">${bt.win_count}胜 ${bt.loss_count}负</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">平均收益</div>
+                        <div class="stat-value" style="color: ${bt.avg_return >= 0 ? '#4caf50' : '#f44336'}">${bt.avg_return > 0 ? '+' : ''}${bt.avg_return}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">累计收益</div>
+                        <div class="stat-value" style="color: ${bt.total_return >= 0 ? '#4caf50' : '#f44336'}">${bt.total_return > 0 ? '+' : ''}${bt.total_return}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">最大回撤</div>
+                        <div class="stat-value" style="color: #f44336">-${bt.max_drawdown}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">止损次数</div>
+                        <div class="stat-value" style="color: #ff9800">${bt.stop_loss_count || 0}</div>
+                    </div>
+                </div>
+            `;
+            
+            if (bt.trades && bt.trades.length > 0) {
+                html += `
+                    <h3>交易明细（${bt.trades.length}笔）</h3>
+                    <table class="trades-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>买入日期</th>
+                                <th>买入价</th>
+                                <th>卖出日期</th>
+                                <th>卖出价</th>
+                                <th>收益率</th>
+                                <th>持有天数</th>
+                                <th>卖出原因</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                bt.trades.forEach((trade, idx) => {
+                    const profitClass = trade.return_pct >= 0 ? 'profit' : 'loss';
+                    const reason = trade.sell_reason || 'S1/S';
+                    const statusBadge = trade.status === 'open' ? '<span style="background:#ff9800;color:white;padding:2px 6px;border-radius:3px;font-size:11px;">持仓中</span>' : '';
+                    
+                    html += `
+                        <tr>
+                            <td>${idx + 1}</td>
+                            <td>${trade.buy_date}</td>
+                            <td>¥${trade.buy_price.toFixed(2)}</td>
+                            <td>${trade.sell_date}</td>
+                            <td>¥${trade.sell_price.toFixed(2)}</td>
+                            <td class="${profitClass}">${trade.return_pct > 0 ? '+' : ''}${trade.return_pct}%</td>
+                            <td>${trade.days_held}天 ${statusBadge}</td>
+                            <td>${reason}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                html += '<p style="color: #999; text-align: center; padding: 40px;">暂无交易记录</p>';
+            }
+            
+            document.getElementById('results-content').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
+

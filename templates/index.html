@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>量化选股系统</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- 使用国内CDN加载Plotly -->
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js@2.26.0/dist/plotly.min.js"></script>
+    <script>
+        // 检查Plotly是否加载成功
+        window.addEventListener('load', function() {
+            if (typeof Plotly === 'undefined') {
+                console.error('Plotly加载失败，尝试备用CDN');
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/plotly.js@2.26.0/dist/plotly.min.js';
+                script.onerror = function() {
+                    alert('图表库加载失败，K线图功能将无法使用。请检查网络连接。');
+                };
+                document.head.appendChild(script);
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <h1>📈 量化选股系统</h1>
+            <div class="date-info">
+                <span id="latest-date">加载中...</span>
+            </div>
+            <div style="margin-top: 15px;">
+                <a href="/backtest" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                    📊 战法回测
+                </a>
+            </div>
+        </header>
+
+        <!-- 选择器选择 -->
+        <div class="selector-panel">
+            <h2>选择战法</h2>
+            <div class="selector-buttons" id="selector-buttons">
+                <!-- 动态生成 -->
+            </div>
+            <button class="btn btn-secondary" onclick="compareAll()">对比所有战法</button>
+        </div>
+
+        <!-- 选股结果 -->
+        <div class="results-panel">
+            <div class="panel-header">
+                <h2 id="results-title">选股结果</h2>
+                <div class="filter-controls">
+                    <label>
+                        排序：
+                        <select id="sort-by" onchange="sortStocks()">
+                            <option value="code">股票代码</option>
+                            <option value="change">涨跌幅</option>
+                            <option value="volume">成交量</option>
+                        </select>
+                    </label>
+                    <label>
+                        <input type="checkbox" id="show-details" onchange="toggleDetails()">
+                        显示详情
+                    </label>
+                </div>
+            </div>
+            
+            <div class="stats" id="stats">
+                <!-- 统计信息 -->
+            </div>
+
+            <div class="stock-grid" id="stock-grid">
+                <div class="empty-state">
+                    <p>👆 请选择一个战法查看选股结果</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- K线图弹窗 -->
+        <div class="modal" id="chart-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">股票代码</h3>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="kline-chart" style="width: 100%; height: 900px;"></div>
+                    <div id="volume-chart" style="display:none;"></div>
+                    <div id="macd-chart" style="display:none;"></div>
+                    <div id="kdj-chart" style="display:none;"></div>
+                    <div id="backtest-result" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 对比结果弹窗 -->
+        <div class="modal" id="compare-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>战法对比结果</h3>
+                    <button class="close-btn" onclick="closeCompareModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="compare-results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
+
