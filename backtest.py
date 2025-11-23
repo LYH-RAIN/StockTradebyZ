@@ -50,6 +50,7 @@ class Backtest:
         initial_capital: float = 100000.0,  # 初始资金
         commission_rate: float = 0.0003,     # 佣金率（万3）
         slippage_rate: float = 0.001,        # 滑点率（0.1%）
+        symbols: Optional[List[str]] = None,  # 指定要加载的股票代码
     ):
         self.data_dir = Path(data_dir)
         self.start_date = pd.Timestamp(start_date)
@@ -60,7 +61,15 @@ class Backtest:
         
         # 加载数据
         logger.info(f"加载数据：{self.data_dir}")
-        codes = [f.stem for f in self.data_dir.glob("*.csv")]
+        
+        # 如果指定了symbols，只加载这些股票；否则加载全部
+        if symbols:
+            codes = symbols
+            logger.info(f"指定加载 {len(codes)} 只股票: {codes}")
+        else:
+            codes = [f.stem for f in self.data_dir.glob("*.csv")]
+            logger.info(f"加载全部股票")
+        
         self.data = load_data(self.data_dir, codes)
         logger.info(f"成功加载 {len(self.data)} 只股票")
         

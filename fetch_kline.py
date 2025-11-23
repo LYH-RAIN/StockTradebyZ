@@ -193,7 +193,7 @@ def main():
     # ---------- Tushare Token ---------- #
     os.environ["NO_PROXY"] = "api.waditu.com,.waditu.com,waditu.com"
     os.environ["no_proxy"] = os.environ["NO_PROXY"]
-    ts_token = os.environ.get("TUSHARE_TOKEN")
+    ts_token = "3f7bcda52659e3ef8372a77d150b6d7749d8006995e804a33d4d0945"
     if not ts_token:
         raise ValueError("请先设置环境变量 TUSHARE_TOKEN，例如：export TUSHARE_TOKEN=你的token")
     ts.set_token(ts_token)
